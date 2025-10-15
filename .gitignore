@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production builds
+build/
+dist/
+
+# Environment files (contains credentials)
+.env
+.env.local
+.env.production
+.env.test
+backend/.env
+frontend/.env
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Docker volumes
+data/
+
+# Kubernetes temporary files
+*.yaml.bak
+
+# Personal documents (keep private)
+*.pdf
+*.docx
+*.doc
+*Resume*
+*resume*
+JEREMY*.docx
+Jeremy*.pdf
+*.CV
+*.cv

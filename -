@@ -1,0 +1,68 @@
+JEREMY BUTLER
+Infrastructure Engineer
+
+CAREER SUMMARY
+Accomplished IT professional with over 12 years of experience in Linux and Windows server administration, automation, and team leadership. Adept at implementing DevOps best practices to streamline operations, enhance system performance, and drive infrastructure scalability. Proven ability to lead high-performing teams, optimize workflows, and develop automation solutions to improve efficiency and reliability.
+
+
+WORK EXPERIENCE
+Healthcare Fraud Shield										    2024 – 2025
+DevOps Engineer 
+	•	MLOps & AI Infrastructure: Optimized ML workflows and infrastructure for data science teams using Kubeflow, Jupyter Notebooks, NLP, Flask, OpenAI, TensorFlow, and containerized environments.
+	•	Security & Compliance: Managed highly restricted environments, addressing vulnerabilities to ensure security compliance.
+	•	Automation & Scripting: Developed a Python application integrating CyberArk API for secure credential management, improving workflow efficiency.
+	•	Cloud & DevOps: Led Azure cloud migrations, automated provisioning/security compliance with Azure Bicep & Ansible and onboarded on-prem infrastructure to Azure Arc for monitoring and security orchestration.
+
+CQG 												            2023 - Present
+DevOps & Automation Specialist | System Administrator 
+	•	Infrastructure Automation: Designed automated provisioning and management workflows using Foreman, Katello, Ansible, Puppet, and Terraform. Developed a custom Terraform provisioner for Microsoft Hyper-V.
+	•	CI/CD & Deployment: Integrated Foreman with GitLab CI/CD to automate provisioning and software deployment, reducing manual effort across teams.
+	•	Cloud & Containers: Managed Kubernetes (K3s, K8s), Rancher, Docker, Podman, and automated cloud/on-prem infrastructure with Azure, AWS, and Proxmox.
+	•	Monitoring & Security: Implemented observability and security compliance solutions in highly secure environments using Grafana, CheckMK, and OpenSearch.
+	•	Tech Stack: Kubernetes, Terraform, GitLab, Ansible, Puppet, Docker, Python, Ruby, Go, Foreman, Katello, Hyper-V, Red Hat Linux, Jenkins, Azure, AWS, and more.
+
+MojoHost				2020 – 2023
+Manager 					
+	•	Led a team of System Administrators, overseeing infrastructure management, automation, and client support.
+	•	Managed staff scheduling, training, performance reviews, and escalations.
+	•	Implemented and managed GitLab workflows for system automation and infrastructure provisioning.
+	•	Led client IT migrations, ensuring seamless transitions to managed hosting services.
+	•	Prioritized and delegated help desk tickets while mentoring team members. 
+
+MojoHost				2011 - 2020
+Systems Administration
+	•	Provided expert-level Linux server administration, infrastructure optimization, and client support.
+	•	Supported Linux, FreeBSD, and Windows servers, ensuring optimal performance.
+	•	Developed backup automation integrating CephFS, Ansible, and WHMCS.
+	•	Managed cloud infrastructure, CDN technologies, and virtualization (Proxmox, KVM, Docker, Kubernetes).
+	•	Configured and optimized high-availability clusters (Elasticsearch, Redis, HAProxy, MySQL, Nginx).
+	•	Monitored and maintained 2,000+ bare metal servers across multiple data centers.
+	•	Implemented fault-tolerant architectures using load balancing, automation, and cloud integrations.
+	•	Specialized in DNS, email server configuration, and security compliance.
+
+KEY SKILLS
+	•	System Administration: 12+ years managing Linux (Red Hat, CentOS) and Windows Server environments.
+	•	Networking & Security: Expertise in troubleshooting network performance, security auditing, patching, PCI/HIPAA compliance.
+	•	Automation & IaC: Extensive experience with Ansible, Terraform, Puppet, SaltStack, Foreman(Red Hat Satellite), and Cloud-init.
+	•	Cloud & Virtualization: AWS, Azure, Proxmox, Hyper-V, Kubernetes (Rancher, K3s), OpenStack.
+	•	CI/CD & DevOps: Built pipelines using GitHub Actions, GitLab CI/CD, and Jenkins.
+	•	Containerization: Skilled in Docker, Kubernetes, and automating container deployment.
+	•	Programming & Scripting: Proficient in Python, Bash, PHP, Java, Swift, Ruby. Experienced with Flask, Django, Fast API, and OpenAI integrations.
+	•	Collaboration & Optimization: Strong ability to streamline operations, enhance production efficiency, and coordinate across teams.
+	•	Certifications & Training: Completed courses in AWS, Kubernetes, Terraform, Python, DevOps Automation, and Docker.
+
+EDUCATION/CERTIFICATIONS:
+	•	2023-2024 | Udemy
+	•	Google Certified Kubernetes Administrator
+	•	Complete DevOps Ansible Automation Training
+	•	Red Hat Certified System Administrator (RHCSA - EX200)
+	•	Microsoft Azure Fundamentals (AZ-900) – 2024
+	•	API Testing with Python 3 & Pytest, Backend Automation – 2024
+	•	2011 – 2022 | Linux Academy 
+	•	Continuously updated skills through courses on AWS, Cloud/Object Storage, OpenStack, Virtualization (VMware, KVM, Proxmox), Containers (Kubernetes, Docker), and CD Technologies.
+	•	Regularly pursues advanced training to stay current with emerging technologies and industry best practices.
+	•	2002-2004 | Mott Community College
+	•	Introduction to Linux Administration (COMS-130)
+	•	Network Essentials (COMN-120)
+	•	1999-2001 | Genesse Area Skill Center
+	•	Comp-TIA A+ Certification

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    image: portfolio-frontend:latest
+    environment:
+      - REACT_APP_WEBSOCKET_URL=wss://portfolio.devop.foo
+      - REACT_APP_API_URL=https://portfolio.devop.foo/api
+      - REACT_APP_SITE_URL=https://portfolio.devop.foo
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    image: portfolio-backend:latest
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - FRONTEND_URL=https://portfolio.devop.foo

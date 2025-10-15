@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: portfolio
+  labels:
+    name: portfolio
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-frontend-config
+  namespace: portfolio
+data:
+  REACT_APP_WEBSOCKET_URL: "wss://${DOMAIN}"
+  REACT_APP_API_URL: "https://${DOMAIN}/api"
+  REACT_APP_SITE_URL: "https://${DOMAIN}"
+  REACT_APP_CONTACT_EMAIL: "${EMAIL}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-backend-config
+  namespace: portfolio
+data:
+  NODE_ENV: "production"
+  PORT: "3001"
+  FRONTEND_URL: "https://${DOMAIN}"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: portfolio-secrets
+  namespace: portfolio
+type: Opaque
+stringData:
+  JWT_SECRET: "${JWT_SECRET}"
+  # Add other secrets as needed
+  # SMTP_HOST: ""
+  # SMTP_PORT: ""
+  # SMTP_USER: ""
+  # SMTP_PASS: ""

@@ -1,0 +1,21 @@
+# Backend Dockerfile for Development
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Expose port for backend server
+EXPOSE 3001
+
+# Start development server with nodemon
+CMD ["npm", "run", "dev"]

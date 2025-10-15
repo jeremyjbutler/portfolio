@@ -1,0 +1,126 @@
+---
+- name: Configure Cloudflare DNS for Portfolio Deployment
+  hosts: localhost
+  gather_facts: false
+  vars:
+    cloudflare_api_token: "{{ lookup('env', 'CLOUDFLARE_API_TOKEN') }}"
+    cloudflare_zone: "{{ lookup('env', 'CLOUDFLARE_ZONE') | default('devop.foo') }}"
+    domain_name: "{{ lookup('env', 'DOMAIN') | default('portfolio.devop.foo') }}"
+    # This will be updated with the actual ingress IP
+    target_ip: "{{ ingress_ip | default('127.0.0.1') }}"
+    
+  tasks:
+    - name: Check if Cloudflare API token is set
+      fail:
+        msg: "CLOUDFLARE_API_TOKEN environment variable is required"
+      when: cloudflare_api_token == ""
+
+    - name: Get Kubernetes ingress IP
+      kubernetes.core.k8s_info:
+        api_version: networking.k8s.io/v1
+        kind: Ingress
+        name: portfolio-ingress
+        namespace: portfolio
+      register: ingress_info
+      when: ingress_ip is not defined
+
+    - name: Extract ingress IP
+      set_fact:
+        target_ip: "{{ ingress_info.resources[0].status.loadBalancer.ingress[0].ip }}"
+      when: 
+        - ingress_ip is not defined
+        - ingress_info.resources is defined
+        - ingress_info.resources | length > 0
+        - ingress_info.resources[0].status.loadBalancer.ingress is defined
+
+    - name: Display target IP
+      debug:
+        msg: "Configuring DNS for {{ domain_name }} -> {{ target_ip }}"
+
+    - name: Get Cloudflare zone ID
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones?name={{ cloudflare_zone }}"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+      register: zone_response
+
+    - name: Extract zone ID
+      set_fact:
+        zone_id: "{{ zone_response.json.result[0].id }}"
+      when: zone_response.json.result | length > 0
+
+    - name: Check for existing DNS record
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ zone_id }}/dns_records?name={{ domain_name }}&type=A"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+      register: existing_record
+
+    - name: Create DNS A record
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ zone_id }}/dns_records"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          type: "A"
+          name: "portfolio"
+          content: "{{ target_ip }}"
+          ttl: 1  # Auto
+          proxied: true  # Enable Cloudflare proxy for DDoS protection
+        status_code: 200
+      register: create_result
+      when: existing_record.json.result | length == 0
+
+    - name: Update existing DNS A record
+      uri:
+        url: "https://api.cloudflare.com/client/v4/zones/{{ zone_id }}/dns_records/{{ existing_record.json.result[0].id }}"
+        method: PUT
+        headers:
+          Authorization: "Bearer {{ cloudflare_api_token }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          type: "A"
+          name: "portfolio"
+          content: "{{ target_ip }}"
+          ttl: 1  # Auto
+          proxied: true  # Enable Cloudflare proxy for DDoS protection
+        status_code: 200
+      register: update_result
+      when: existing_record.json.result | length > 0
+
+    - name: Display DNS configuration result
+      debug:
+        msg: |
+          ✅ DNS Configuration Complete!
+          
+          Domain: {{ domain_name }}
+          IP: {{ target_ip }}
+          Status: {{ 'Created' if existing_record.json.result | length == 0 else 'Updated' }}
+          Proxied: Yes (Cloudflare DDoS protection enabled)
+          
+          🌐 Your portfolio will be available at: https://{{ domain_name }}
+          
+          Note: DNS propagation may take a few minutes.
+
+    - name: Verify DNS resolution
+      command: dig +short {{ domain_name }}
+      register: dns_check
+      changed_when: false
+      failed_when: false
+
+    - name: Display DNS propagation status
+      debug:
+        msg: |
+          DNS Propagation Status:
+          Command: dig +short {{ domain_name }}
+          Result: {{ dns_check.stdout if dns_check.rc == 0 else 'Not yet propagated' }}
+          
+          If empty, wait a few minutes for DNS propagation to complete.
