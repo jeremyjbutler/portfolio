@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: portfolio-backend:latest
+        image: 192.168.1.123:32000/portfolio-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3001

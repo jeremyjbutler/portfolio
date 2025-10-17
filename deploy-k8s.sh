@@ -5,6 +5,23 @@ set -e
 # Track deployment time
 START_TIME=$(date +%s)
 
+# Parse command line arguments
+BUILD_IMAGES=true
+for arg in "$@"; do
+    case $arg in
+        --skip-build)
+            BUILD_IMAGES=false
+            shift
+            ;;
+        --build)
+            BUILD_IMAGES=true
+            shift
+            ;;
+        *)
+            ;;
+    esac
+done
+
 echo "🚀 Deploying Jeremy Butler's Portfolio to Production Kubernetes"
 echo "=============================================================="
 echo "📅 Started at: $(date)"
@@ -13,9 +30,13 @@ echo ""
 # Configuration (with environment variable defaults)
 DOMAIN=${DOMAIN:-"portfolio.devop.foo"}
 NAMESPACE=${NAMESPACE:-"portfolio"}
-REGISTRY=${REGISTRY:-"your-registry.com"}
+REGISTRY=${REGISTRY:-"192.168.1.123:32000"}
 EMAIL=${EMAIL:-"admin@${DOMAIN}"}
 CLOUDFLARE_ZONE=${CLOUDFLARE_ZONE:-"devop.foo"}
+PLATFORM=${PLATFORM:-"linux/amd64"}
+
+# Export variables for envsubst
+export DOMAIN NAMESPACE REGISTRY EMAIL CLOUDFLARE_ZONE
 
 echo "⚙️  Configuration:"
 echo "   Domain: $DOMAIN"
@@ -23,6 +44,8 @@ echo "   Email: $EMAIL"
 echo "   Namespace: $NAMESPACE"
 echo "   Cloudflare Zone: $CLOUDFLARE_ZONE" 
 echo "   Registry: $REGISTRY"
+echo "   Platform: $PLATFORM"
+echo "   Build Images: $BUILD_IMAGES"
 echo ""
 
 # Check if kubectl is available
@@ -31,7 +54,7 @@ if ! command -v kubectl &> /dev/null; then
     echo "❌ kubectl is not installed. Please install kubectl first."
     exit 1
 fi
-echo "   ✅ kubectl found: $(kubectl version --client --short)"
+echo "   ✅ kubectl found: $(kubectl version --client 2>/dev/null | head -1 || echo 'kubectl installed')"
 
 # Check if we can connect to the cluster
 echo "   🔗 Testing cluster connection..."
@@ -47,14 +70,28 @@ kubectl cluster-info | head -2 | sed 's/^/      /'
 echo "   🎯 Current context: $(kubectl config current-context)"
 echo ""
 
-# Build production images
-echo "🏗️  Building production Docker images..."
-echo "   📦 Starting Docker build process..."
-if docker compose -f docker-compose.prod.yml build; then
-    echo "   ✅ Docker images built successfully"
+# Build production images (conditional)
+if [ "$BUILD_IMAGES" = true ]; then
+    echo "🏗️  Building production Docker images..."
+    echo "   📦 Building images for $PLATFORM architecture..."
+
+    echo "   🔨 Building frontend image..."
+    if docker buildx build --platform $PLATFORM -t portfolio-frontend:latest -f frontend/Dockerfile.prod ./frontend --load; then
+        echo "   ✅ Frontend image built successfully"
+    else
+        echo "   ❌ Frontend build failed"
+        exit 1
+    fi
+
+    echo "   🔨 Building backend image..."
+    if docker buildx build --platform $PLATFORM -t portfolio-backend:latest -f backend/Dockerfile.prod ./backend --load; then
+        echo "   ✅ Backend image built successfully"
+    else
+        echo "   ❌ Backend build failed"
+        exit 1
+    fi
 else
-    echo "   ❌ Docker build failed"
-    exit 1
+    echo "⏩ Skipping image build (using existing images)"
 fi
 
 echo ""
@@ -62,7 +99,16 @@ echo "📋 Checking built images:"
 docker images | grep -E "(portfolio-frontend|portfolio-backend)" | sed 's/^/   /'
 echo ""
 
-# Tag images for registry (update registry URL as needed)
+# Test registry connectivity
+echo "🔗 Testing registry connectivity..."
+if curl -s "http://$REGISTRY/v2/" | grep -q "{}"; then
+    echo "   ✅ Registry is accessible at $REGISTRY"
+else
+    echo "   ❌ Registry is not accessible at $REGISTRY"
+    exit 1
+fi
+
+# Tag images for registry
 echo "🏷️  Tagging images for registry..."
 echo "   🏷️  Tagging frontend: portfolio-frontend:latest -> $REGISTRY/portfolio-frontend:latest"
 docker tag portfolio-frontend:latest $REGISTRY/portfolio-frontend:latest
@@ -70,11 +116,25 @@ echo "   🏷️  Tagging backend: portfolio-backend:latest -> $REGISTRY/portfol
 docker tag portfolio-backend:latest $REGISTRY/portfolio-backend:latest
 echo "   ✅ Images tagged successfully"
 
-# Push to registry (uncomment when ready)
-# echo "📤 Pushing images to registry..."
-# docker push $REGISTRY/portfolio-frontend:latest
-# docker push $REGISTRY/portfolio-backend:latest
-echo "   ℹ️  Registry push skipped (using local images)"
+# Push to registry
+echo "📤 Pushing images to local registry..."
+echo "   📤 Pushing frontend image..."
+if docker push $REGISTRY/portfolio-frontend:latest; then
+    echo "   ✅ Frontend image pushed successfully"
+else
+    echo "   ❌ Failed to push frontend image"
+    exit 1
+fi
+
+echo "   📤 Pushing backend image..."
+if docker push $REGISTRY/portfolio-backend:latest; then
+    echo "   ✅ Backend image pushed successfully"
+else
+    echo "   ❌ Failed to push backend image"
+    exit 1
+fi
+
+echo "   ✅ Images successfully pushed to registry"
 
 # Update image references in k8s manifests if using external registry
 if [ "$REGISTRY" != "your-registry.com" ]; then
@@ -112,6 +172,14 @@ echo ""
 
 # Create namespace and configurations first
 echo "🏷️  Creating namespace and configurations..."
+
+# Check if namespace exists first
+if kubectl get namespace $NAMESPACE >/dev/null 2>&1; then
+    echo "   ✅ Namespace '$NAMESPACE' already exists, updating configuration..."
+else
+    echo "   📝 Creating new namespace '$NAMESPACE'..."
+fi
+
 echo "   📄 Applying: 00-namespace-config.yaml (with environment substitution)"
 if kubectl apply -f "$TEMP_DIR/00-namespace-config.yaml"; then
     echo "   ✅ Namespace configuration applied"
@@ -120,12 +188,17 @@ else
     exit 1
 fi
 
-# Wait for namespace to be ready  
-echo "   ⏳ Waiting for namespace to be ready..."
-if kubectl wait --for=condition=Ready namespace/$NAMESPACE --timeout=60s; then
-    echo "   ✅ Namespace '$NAMESPACE' is ready"
+# Check namespace status (skip waiting if it already exists and is active)
+NS_STATUS=$(kubectl get namespace $NAMESPACE -o jsonpath='{.status.phase}' 2>/dev/null || echo "Unknown")
+if [ "$NS_STATUS" = "Active" ]; then
+    echo "   ✅ Namespace '$NAMESPACE' is active and ready"
 else
-    echo "   ⚠️  Namespace may not be fully ready, continuing..."
+    echo "   ⏳ Waiting for namespace to be ready..."
+    if kubectl wait --for=condition=Ready namespace/$NAMESPACE --timeout=30s 2>/dev/null; then
+        echo "   ✅ Namespace '$NAMESPACE' is ready"
+    else
+        echo "   ⚠️  Namespace may not be fully ready, continuing..."
+    fi
 fi
 
 # Apply SSL certificate configuration (if cert-manager is installed)
@@ -231,27 +304,38 @@ rm -rf "$TEMP_DIR"
 echo "   ✅ Temporary files cleaned up"
 
 echo ""
+echo ""
+
+# Configure NPM Reverse Proxy
+echo "� Configuring NPM Reverse Proxy..."
+if [ -n "$PROXY_EMAIL" ] && [ -n "$PROXY_PASSWORD" ]; then
+    echo "   📡 Running proxy configuration..."
+    if ./configure-proxy.sh; then
+        echo "   ✅ NPM proxy configured successfully"
+    else
+        echo "   ⚠️  NPM proxy configuration failed, you can run it manually:"
+        echo "   ./configure-proxy.sh"
+    fi
+else
+    echo "   ⚠️  NPM proxy credentials not set, skipping automatic configuration"
+    echo "   To configure manually, set PROXY_EMAIL and PROXY_PASSWORD in ~/.env and run:"
+    echo "   ./configure-proxy.sh"
+fi
+
+echo ""
 echo "🎉 Deployment Complete!"
 echo "📅 Completed at: $(date)"
 echo ""
 echo "📋 Next Steps:"
-echo "1. 🌐 Add DNS record in Cloudflare:"
-echo "   Type: A (or CNAME if hostname)"
-echo "   Name: portfolio"
-echo "   Value: $INGRESS_IP"
-echo "   TTL: Auto"
+echo "1. 🔧 Configure NPM reverse proxy hosts (if not already done):"
+echo "   ./configure-proxy.sh"
 echo ""
 echo "2. 🔗 Your portfolio will be available at:"
-echo "   https://$DOMAIN"
+echo "   https://jeremy.devop.foo"
+echo "   https://portfolio.devop.foo"
+echo "   https://jb.devop.foo"
 echo ""
-echo "3. 📊 Monitor deployment:"
-echo "   kubectl get pods -n $NAMESPACE -w"
-echo "   kubectl logs -f deployment/portfolio-backend -n $NAMESPACE"
-echo "   kubectl logs -f deployment/portfolio-frontend -n $NAMESPACE"
-echo ""
-echo "4. 🔧 Useful commands:"
-echo "   kubectl describe ingress portfolio-ingress -n $NAMESPACE"
-echo "   kubectl get events -n $NAMESPACE --sort-by=.metadata.creationTimestamp"
+echo "ℹ️  DNS & SSL: Already configured with *.devop.foo wildcard"
 
 # Restore original manifests if modified
 if [ "$REGISTRY" != "your-registry.com" ] && [ -f "k8s/02-frontend-deployment.yaml.bak" ]; then

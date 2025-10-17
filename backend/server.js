@@ -54,20 +54,31 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// Allowed origins for CORS
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://jeremy.devop.foo",
+  "https://portfolio.devop.foo", 
+  "https://jb.devop.foo",
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 // Middleware
 app.use(compression());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: allowedOrigins,
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Socket.IO setup
+
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   },
   transports: ['websocket', 'polling']
 });

@@ -14,7 +14,17 @@ import './App.css';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
-  const { status, sendMessage } = useWebSocket('ws://localhost:5000');
+  
+  // Use dynamic WebSocket URL based on environment
+  const getWebSocketUrl = () => {
+    if (process.env.NODE_ENV === 'development') {
+      return 'http://localhost:3001';
+    }
+    // In production, use the same origin but target the backend service
+    return window.location.origin;
+  };
+  
+  const { status, sendMessage } = useWebSocket(getWebSocketUrl());
 
   useEffect(() => {
     const handleScroll = () => {

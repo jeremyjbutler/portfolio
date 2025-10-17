@@ -38,12 +38,18 @@ const StatusText = styled.span`
 `;
 
 const WebSocketStatus = ({ status }) => {
+  // Only show the status indicator when connected
+  // Hide when offline/disconnected to avoid showing technical details to users
+  if (status !== 'connected') {
+    return null;
+  }
+
   const getStatusConfig = () => {
     switch (status) {
       case 'connected':
         return {
           color: '#00ff88',
-          text: 'Connected',
+          text: 'Live',
           className: 'status-online'
         };
       case 'connecting':
@@ -71,7 +77,7 @@ const WebSocketStatus = ({ status }) => {
         className={config.className}
         style={{ backgroundColor: config.color }}
       />
-      <StatusText>WebSocket {config.text}</StatusText>
+      <StatusText>{config.text}</StatusText>
     </StatusContainer>
   );
 };

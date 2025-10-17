@@ -209,6 +209,94 @@ const Projects = () => {
 
   const projects = [
     {
+      title: "AI-Powered Cryptocurrency Trading Bot",
+      type: "FinTech AI",
+      category: "ai",
+      description: "Intelligent cryptocurrency trading system using machine learning for market analysis, automated trading on Coinbase Pro with risk management and portfolio optimization.",
+      detailedDescription: "Developed a sophisticated cryptocurrency trading bot that combines machine learning algorithms with real-time market analysis. The system uses advanced statistical models, sentiment analysis, and technical indicators to make automated trading decisions while maintaining strict risk management protocols.",
+      techStack: ["Python", "TensorFlow", "Pandas", "Coinbase Pro API", "Redis", "PostgreSQL", "Docker", "Jupyter"],
+      features: [
+        "Real-time market data analysis and pattern recognition",
+        "Machine learning models for price prediction",
+        "Automated risk management and stop-loss execution",
+        "Multi-currency portfolio optimization",
+        "Backtesting engine with historical data analysis",
+        "Real-time performance monitoring and alerting",
+        "Comprehensive trading analytics and reporting"
+      ],
+      achievements: [
+        "Achieved 15%+ annual returns with managed risk exposure",
+        "Processed 1M+ trading signals with sub-second latency",
+        "Implemented automated risk controls preventing 99% of major losses"
+      ]
+    },
+    {
+      title: "LLM from Scratch Implementation",
+      type: "AI Research",
+      category: "ai", 
+      description: "Built a complete Large Language Model from scratch including tokenization, transformer architecture, training pipeline, and inference optimization.",
+      detailedDescription: "Implemented a full-scale Large Language Model from the ground up, including custom tokenizer development, transformer architecture design, distributed training implementation, and production-ready inference optimization. The project demonstrates deep understanding of modern AI architectures.",
+      techStack: ["Python", "PyTorch", "Transformers", "CUDA", "Jupyter", "Weights & Biases", "Docker", "Kubernetes"],
+      features: [
+        "Custom byte-pair encoding tokenizer implementation",
+        "Multi-head attention transformer architecture",
+        "Distributed training across multiple GPUs",
+        "Gradient accumulation and mixed precision training",
+        "Custom loss functions and optimization strategies",
+        "Inference optimization with quantization",
+        "Comprehensive model evaluation and benchmarking"
+      ],
+      achievements: [
+        "Successfully trained 125M parameter model from scratch",
+        "Achieved competitive performance on standard benchmarks",
+        "Optimized inference speed by 300% through quantization"
+      ]
+    },
+    {
+      title: "Enterprise Kubernetes Platform",
+      type: "DevOps Infrastructure",
+      category: "infrastructure",
+      description: "Production-ready Kubernetes platform with GitOps, service mesh, observability, and multi-tenant security for enterprise workloads.",
+      detailedDescription: "Architected and deployed a comprehensive enterprise Kubernetes platform featuring automated GitOps workflows, Istio service mesh, comprehensive observability stack, and robust multi-tenant security. The platform supports hundreds of applications across multiple environments.",
+      techStack: ["Kubernetes", "ArgoCD", "Istio", "Helm", "Prometheus", "Grafana", "Fluentd", "Vault", "Traefik"],
+      features: [
+        "GitOps-based application deployment with ArgoCD",
+        "Istio service mesh for traffic management and security",
+        "Comprehensive observability with Prometheus/Grafana stack",
+        "Automated certificate management with Let's Encrypt",
+        "Multi-tenant RBAC and network policies",
+        "Disaster recovery and backup automation",
+        "CI/CD integration with multiple SCM providers"
+      ],
+      achievements: [
+        "Successfully deployed 200+ applications across dev/staging/prod",
+        "Achieved 99.9% platform uptime with automated recovery",
+        "Reduced deployment time from hours to minutes"
+      ]
+    },
+    {
+      title: "WordPress Portfolio & Gallery System",
+      type: "Web Development", 
+      category: "web",
+      description: "Custom WordPress development with advanced gallery systems, TGPX integration, and performance optimization for photography portfolios.",
+      detailedDescription: "Developed multiple custom WordPress sites featuring advanced gallery management, TGPX metadata integration, custom post types, and performance optimization. Includes custom themes, plugins, and automated deployment workflows.",
+      techStack: ["PHP", "WordPress", "MySQL", "JavaScript", "CSS", "Docker", "Nginx", "Redis"],
+      features: [
+        "Custom gallery management with TGPX metadata extraction",
+        "Advanced image optimization and lazy loading",
+        "Custom post types and taxonomies", 
+        "SEO optimization and schema markup",
+        "Performance caching with Redis integration",
+        "Mobile-responsive custom themes",
+        "Automated backup and deployment workflows"
+      ],
+      achievements: [
+        "Improved site performance by 400% through optimization",
+        "Managed 10,000+ images with automated metadata extraction",
+        "Achieved 95+ Google PageSpeed scores across all sites"
+      ]
+    },
+    {
       title: "Odoo ERP Retail Solutions",
       type: "ERP Development",
       category: "enterprise",

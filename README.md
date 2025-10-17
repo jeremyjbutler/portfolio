@@ -222,6 +222,48 @@ REGISTRY=your-registry.com
    - Zone:DNS:Edit permissions  
    - Include all zones (or specify devop.foo)
 
+## 🛠 Build Scripts & Architecture
+
+### Build Commands
+```bash
+# Build and push images with correct architecture
+./build-and-push.sh
+
+# Deploy with custom settings
+DOMAIN=mysite.com REGISTRY=my-registry:5000 ./deploy-k8s.sh
+
+# Deploy without rebuilding (use existing images)
+./deploy-k8s.sh --skip-build
+
+# See all options
+./usage.sh
+```
+
+### Architecture Support
+The build scripts automatically target **linux/amd64** architecture for compatibility with most Kubernetes clusters. This prevents "exec format error" issues when deploying from ARM64 machines (Apple Silicon Macs) to x86_64 clusters.
+
+**Environment Variables:**
+- `PLATFORM=linux/amd64` - Default for x86_64 clusters
+- `PLATFORM=linux/arm64` - For ARM64 clusters (Raspberry Pi, etc.)
+- `REGISTRY=192.168.1.123:32000` - Local registry endpoint
+
+### Troubleshooting
+
+**"exec format error" in pods:**
+- This indicates architecture mismatch
+- Run: `PLATFORM=linux/amd64 ./build-and-push.sh`
+- Then: `./deploy-k8s.sh --skip-build`
+
+**Registry push failures:**
+- Ensure registry is accessible: `curl http://192.168.1.123:32000/v2/`
+- Check network connectivity to registry
+- Verify no authentication required or credentials set
+
+**WebSocket "offline" status:**
+- Ensure backend pods are running: `kubectl get pods -n portfolio`
+- Check CORS configuration allows your domain
+- Verify ingress routes `/socket.io` to backend service
+
 ## 🤝 Contributing
 
 1. Fork the repository

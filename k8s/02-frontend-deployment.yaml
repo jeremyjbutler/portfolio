@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: portfolio-frontend:latest
+        image: 192.168.1.123:32000/portfolio-frontend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

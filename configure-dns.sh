@@ -6,6 +6,8 @@ CLOUDFLARE_ZONE=${CLOUDFLARE_ZONE:-"devop.foo"}
 
 echo "🌐 Configuring Cloudflare DNS for $DOMAIN"
 echo "===================================================="
+echo "   Target: NPM Proxy Server (${PROXY_HOST:-192.168.1.111})"
+echo ""
 
 # Check if required environment variables are set
 if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
@@ -19,17 +21,10 @@ fi
 if ! command -v ansible-playbook &> /dev/null; then
     echo "⚠️  Ansible not found. Installing requirements manually via curl..."
     
-    # Get ingress IP from Kubernetes
-    echo "🔍 Getting Kubernetes ingress IP..."
-    INGRESS_IP=$(kubectl get ingress portfolio-ingress -n portfolio -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null)
-    
-    if [ -z "$INGRESS_IP" ]; then
-        echo "❌ Could not get ingress IP. Make sure the deployment is complete."
-        echo "   Run: kubectl get ingress portfolio-ingress -n portfolio"
-        exit 1
-    fi
-    
-    echo "📍 Ingress IP: $INGRESS_IP"
+    # Use NPM proxy server IP instead of Kubernetes ingress
+    PROXY_IP=${PROXY_HOST:-"192.168.1.111"}
+    echo "🎯 Using NPM Proxy Server IP: $PROXY_IP"
+    echo "   (Traffic will flow: Internet → Cloudflare → NPM Proxy → Kubernetes)"
     
     # Get Cloudflare zone ID
     echo "🔍 Getting Cloudflare zone ID..."
@@ -63,7 +58,7 @@ if ! command -v ansible-playbook &> /dev/null; then
             --data '{
                 "type": "A",
                 "name": "portfolio",
-                "content": "'$INGRESS_IP'",
+                "content": "'$PROXY_IP'",
                 "ttl": 1,
                 "proxied": true
             }')
@@ -78,7 +73,7 @@ if ! command -v ansible-playbook &> /dev/null; then
             --data '{
                 "type": "A",
                 "name": "portfolio",
-                "content": "'$INGRESS_IP'",
+                "content": "'$PROXY_IP'",
                 "ttl": 1,
                 "proxied": true
             }')
@@ -94,7 +89,7 @@ if ! command -v ansible-playbook &> /dev/null; then
         echo ""
         echo "📋 Configuration Details:"
         echo "   Domain: $DOMAIN"
-        echo "   IP: $INGRESS_IP"
+        echo "   IP: $PROXY_IP"
         echo "   Status: $ACTION"
         echo "   Proxied: Yes (Cloudflare DDoS protection enabled)"
         echo ""
