@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
@@ -219,12 +219,14 @@ const Skills = () => {
       color: '#6c5ce7',
       skills: [
         { name: 'LLMs from Scratch', experience: '2+ years', description: 'Building language models, transformer architecture' },
-        { name: 'OpenAI Integration', experience: '3+ years', description: 'GPT API, embeddings, fine-tuning, blog automation' },
+        { name: 'OpenAI Integration', experience: '3+ years', description: 'GPT API, embeddings, fine-tuning, blog automation, receipt processing' },
         { name: 'Hugging Face', experience: '2+ years', description: 'Transformers, model deployment, inference' },
         { name: 'Langchain', experience: '2+ years', description: 'LLM application framework, chains, agents' },
         { name: 'Vector Databases', experience: '2+ years', description: 'Pinecone, Weaviate, embeddings storage' },
         { name: 'MLOps', experience: '2+ years', description: 'Model deployment, monitoring, CI/CD for ML' },
-        { name: 'Computer Vision', experience: '2+ years', description: 'Image processing, object detection' }
+        { name: 'Computer Vision', experience: '2+ years', description: 'Image processing, object detection, OCR pipelines' },
+        { name: 'Tesseract OCR', experience: '2+ years', description: 'Optical character recognition, document processing, receipt scanning' },
+        { name: 'Automation Bots', experience: '3+ years', description: 'Social media automation, human-like behavior patterns, anti-detection' }
       ]
     },
     'Cryptocurrency & Trading': {
@@ -301,7 +303,18 @@ const Skills = () => {
         { name: 'HTML/CSS', experience: '8+ years', description: 'Frontend markup, CSS Grid, Flexbox, responsive design' },
         { name: 'Vite', experience: '2+ years', description: 'Build tool, HMR, modern bundling' },
         { name: 'Amplify', experience: '2+ years', description: 'AWS full-stack development, serverless' },
-        { name: 'Unity', experience: '2+ years', description: 'Game development, 3D applications, C# scripting' }
+        { name: 'Unity', experience: '2+ years', description: 'Game development, 3D applications, C# scripting' },
+        { name: 'Canvas API', experience: '2+ years', description: 'Interactive graphics, animations, game development' }
+      ]
+    },
+    'IoT & Real-time Systems': {
+      color: '#00cec9',
+      skills: [
+        { name: 'MQTT', experience: '3+ years', description: 'IoT messaging protocol, broker management' },
+        { name: 'GPS Tracking', experience: '2+ years', description: 'Real-time location services, fleet management' },
+        { name: 'Bluetooth LE', experience: '2+ years', description: 'BLE mesh networking, iOS Core Bluetooth' },
+        { name: 'Time Series Data', experience: '3+ years', description: 'InfluxDB, Prometheus, sensor data processing' },
+        { name: 'Edge Computing', experience: '2+ years', description: 'K3s edge deployments, local processing' }
       ]
     },
     'ERP & Business Systems': {
@@ -318,11 +331,34 @@ const Skills = () => {
     }
   };
 
-  const filters = ['all', ...Object.keys(skillCategories)];
+  // Try to load dynamic skills from /skills.json (served from a ConfigMap mount
+  // or via the backend). If the fetch fails, fall back to the hard-coded
+  // `skillCategories` above.
+  const [dynamicCategories, setDynamicCategories] = useState(null);
 
-  const filteredCategories = activeFilter === 'all' 
-    ? skillCategories 
-    : { [activeFilter]: skillCategories[activeFilter] };
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/skills.json')
+      .then(res => {
+        if (!res.ok) throw new Error('no skills file');
+        return res.json();
+      })
+      .then(data => {
+        if (!cancelled && data && typeof data === 'object') setDynamicCategories(data);
+      })
+      .catch(() => {
+        /* keep default hard-coded categories */
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  const categoriesSource = dynamicCategories || skillCategories;
+
+  const filters = ['all', ...Object.keys(categoriesSource)];
+
+  const filteredCategories = activeFilter === 'all'
+    ? categoriesSource
+    : { [activeFilter]: categoriesSource[activeFilter] };
 
   const containerVariants = {
     hidden: { opacity: 0 },

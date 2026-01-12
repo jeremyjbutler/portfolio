@@ -209,6 +209,52 @@ const Projects = () => {
 
   const projects = [
     {
+      title: "ReceiptBuddy - AI Receipt Scanner",
+      type: "AI/OCR Application",
+      category: "ai",
+      description: "Python-based web application using OCR and AI to scan receipt images and automatically extract data into Excel spreadsheets with intelligent categorization.",
+      detailedDescription: "A comprehensive receipt processing system that combines Tesseract OCR with OpenAI's GPT for intelligent data extraction. Features drag-and-drop upload, automatic text recognition, and smart field extraction for staff member, amount, department, and project codes.",
+      techStack: ["Python", "Flask", "Tesseract OCR", "OpenAI API", "Pandas", "Excel", "Docker", "JavaScript"],
+      features: [
+        "Drag & drop image upload with preview",
+        "OCR text extraction using Tesseract",
+        "AI-powered intelligent data extraction with OpenAI",
+        "Automated Excel spreadsheet generation",
+        "Editable fields before final export",
+        "Department and project categorization",
+        "Automatic metrics calculation (totals, averages)"
+      ],
+      achievements: [
+        "Reduced manual receipt entry time by 90%",
+        "Achieved 95%+ accuracy on clear receipt images",
+        "Processed 1000+ receipts with automated categorization"
+      ],
+      github: "https://github.com/jeremyjbutler/ReceiptBuddy"
+    },
+    {
+      title: "Instagram Follower Management Bot",
+      type: "Social Media Automation",
+      category: "ai",
+      description: "Sophisticated Instagram automation system with human-like behavior patterns, comprehensive testing infrastructure, and professional deployment capabilities.",
+      detailedDescription: "A professional-grade Instagram automation platform featuring intelligent hashtag monitoring, smart following/unfollowing based on configurable criteria, and advanced rate limiting to avoid detection. Built with comprehensive testing (unit, integration, E2E) and monitoring infrastructure.",
+      techStack: ["Python", "Selenium", "SQLite", "PostgreSQL", "Docker", "Prometheus", "Grafana", "pytest"],
+      features: [
+        "Hashtag monitoring and intelligent user discovery",
+        "Smart following based on follower ratio and post count",
+        "Automated unfollowing with configurable time delays",
+        "Human-like throttling with variable delays",
+        "Session persistence and automatic renewal",
+        "Prometheus metrics and Grafana dashboards",
+        "Comprehensive test suite with 80%+ coverage"
+      ],
+      achievements: [
+        "Implemented human-like behavior avoiding detection",
+        "Built full CI/CD pipeline with automated testing",
+        "Achieved consistent account growth without bans"
+      ],
+      github: "https://github.com/jeremyjbutler/instagramfollowers"
+    },
+    {
       title: "AI-Powered Cryptocurrency Trading Bot",
       type: "FinTech AI",
       category: "ai",
@@ -427,12 +473,125 @@ const Projects = () => {
         "Implemented battery-efficient protocols with 12+ hour operation",
         "Developed custom mesh networking protocol"
       ]
+    },
+    {
+      title: "MyPowerliftingCoach - AI Training Platform",
+      type: "Fitness AI Application",
+      category: "personal",
+      description: "AI-powered powerlifting coaching application that generates personalized training programs based on individual goals, experience level, and recovery capacity.",
+      detailedDescription: "A comprehensive fitness platform combining sports science with AI to deliver personalized powerlifting programs. Features intelligent load progression, fatigue management, and competition peaking strategies based on established periodization principles.",
+      techStack: ["Python", "FastAPI", "React", "PostgreSQL", "TensorFlow", "Docker", "Kubernetes"],
+      features: [
+        "AI-generated personalized training programs",
+        "Automatic load progression algorithms",
+        "Fatigue and recovery tracking",
+        "Competition peaking strategies",
+        "Exercise video library and form guides",
+        "Progress tracking with analytics dashboard",
+        "Integration with fitness wearables"
+      ],
+      achievements: [
+        "Developed proprietary RPE-based progression algorithms",
+        "Created training plans used by competitive powerlifters",
+        "Implemented periodization models from sports science research"
+      ],
+      github: "https://github.com/jeremyjbutler/MyPowerliftingCoach"
+    },
+    {
+      title: "Wheel of Loot and Plunder",
+      type: "Game Development",
+      category: "personal",
+      description: "Interactive pirate-themed wheel spinning game with customizable prizes, animations, and multiplayer support for parties and events.",
+      detailedDescription: "A fun, interactive web-based game featuring a customizable prize wheel with pirate theming. Built for parties and events with real-time multiplayer support, custom sound effects, and smooth animations.",
+      techStack: ["JavaScript", "React", "Canvas API", "WebSockets", "Node.js", "CSS Animations"],
+      features: [
+        "Customizable prize wheel with drag-and-drop editor",
+        "Smooth physics-based wheel spinning animations",
+        "Pirate-themed sound effects and visuals",
+        "Real-time multiplayer game sessions",
+        "Prize history and statistics tracking",
+        "Mobile-responsive design",
+        "Shareable game links"
+      ],
+      achievements: [
+        "Created engaging user experience with smooth animations",
+        "Implemented realistic wheel physics simulation",
+        "Built for use at multiple live events"
+      ],
+      github: "https://github.com/jeremyjbutler/WheelofLootandPlunder"
+    },
+    {
+      title: "On Target AI - ERP Integration",
+      type: "Enterprise Integration",
+      category: "enterprise",
+      description: "Comprehensive Odoo ERP integration platform for retail businesses with AI-powered inventory predictions and automated workflow orchestration.",
+      detailedDescription: "An enterprise integration solution connecting Odoo ERP with various business systems. Features AI-powered demand forecasting, automated inventory management, and intelligent workflow automation for retail operations.",
+      techStack: ["Python", "Odoo", "PostgreSQL", "FastAPI", "Redis", "Celery", "Docker", "Kubernetes"],
+      features: [
+        "AI-powered demand forecasting",
+        "Real-time inventory synchronization",
+        "Automated purchase order generation",
+        "Multi-location warehouse management",
+        "Integration with POS systems",
+        "Custom reporting dashboards",
+        "API gateway for third-party integrations"
+      ],
+      achievements: [
+        "Reduced stockouts by 40% with predictive ordering",
+        "Automated 80% of manual inventory processes",
+        "Integrated with 5+ third-party systems"
+      ]
+    },
+    {
+      title: "DriveBuddy - Fleet Management",
+      type: "IoT Platform",
+      category: "enterprise",
+      description: "Fleet management and vehicle tracking platform with real-time GPS monitoring, driver behavior analytics, and maintenance scheduling.",
+      detailedDescription: "A comprehensive fleet management solution providing real-time vehicle tracking, driver behavior scoring, fuel efficiency monitoring, and predictive maintenance alerts. Built for businesses managing vehicle fleets of any size.",
+      techStack: ["Python", "React", "PostgreSQL", "Redis", "MQTT", "Docker", "Kubernetes", "Grafana"],
+      features: [
+        "Real-time GPS vehicle tracking",
+        "Driver behavior scoring and analytics",
+        "Fuel efficiency monitoring",
+        "Predictive maintenance alerts",
+        "Route optimization suggestions",
+        "Geofencing and alerts",
+        "Comprehensive reporting dashboard"
+      ],
+      achievements: [
+        "Reduced fleet fuel costs by 15%",
+        "Implemented real-time tracking for 100+ vehicles",
+        "Built predictive maintenance reducing breakdowns by 30%"
+      ]
+    },
+    {
+      title: "InvoiceBuddy - Automated Invoicing",
+      type: "Business Automation",
+      category: "enterprise",
+      description: "Automated invoicing platform with OCR data extraction, customer management, and integration with accounting systems for streamlined billing workflows.",
+      detailedDescription: "A business automation tool that streamlines the invoicing process through OCR-based data extraction, automated customer matching, and seamless integration with popular accounting platforms. Features bulk processing and smart categorization.",
+      techStack: ["Python", "FastAPI", "React", "PostgreSQL", "Tesseract OCR", "Docker", "Redis"],
+      features: [
+        "OCR-based invoice data extraction",
+        "Automated customer matching",
+        "Bulk invoice processing",
+        "Integration with QuickBooks and Xero",
+        "Payment reminder automation",
+        "Custom invoice templates",
+        "Financial reporting and analytics"
+      ],
+      achievements: [
+        "Reduced invoice processing time by 75%",
+        "Achieved 90%+ accuracy in automated data extraction",
+        "Processed 10,000+ invoices automatically"
+      ]
     }
   ];
 
-  const categories = ['all', 'enterprise', 'infrastructure', 'integration', 'personal'];
+  const categories = ['all', 'ai', 'enterprise', 'infrastructure', 'integration', 'personal'];
   const categoryLabels = {
     all: 'All Projects',
+    ai: 'AI & Automation',
     enterprise: 'Enterprise',
     infrastructure: 'Infrastructure',
     integration: 'Integration',
